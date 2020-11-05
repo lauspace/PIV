@@ -12,12 +12,12 @@ mask2 = zeros(size(image2,1), size(image2,2));
 for i = 1:1:size(image2,1)
     for j = 1:1:size(image2,2)
         % Valor óptim entre 8500-9000
-        if (histCbCr(imageCbCr(i,j,2), imageCbCr(i,j,3)) < 13000)
+        if (histCbCr(imageCbCr(i,j,2), imageCbCr(i,j,3)) < 6750)
             mask2(i,j) = 1;
         end
     end
 end
 
 % Tractament de la imatge (si es necesari)
-cd (path_scripts);
-mask_treat;
+% cd (path_scripts);
+% mask_treat;

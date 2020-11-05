@@ -6,6 +6,7 @@ for k = 3:1:numMask
     algo2;
 
     % Guardem la imatge amb el nom desitjat
+    cd(path_masks);
     imwrite(mask2, dirImg(k).name);
 end
 
