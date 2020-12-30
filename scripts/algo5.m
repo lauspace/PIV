@@ -1,13 +1,13 @@
-% algo4;
+% Llegir la màscara a analitzar
 
-% cd(path_masks);
+cd(path_masks_ideal);    
+mask2 = imread(dirMask(k).name);
 
-% mask2 = im2bw(imread(dirMasks(4).name));
+% Obtenir la mascara només de la mà (sense braç)
 
-% Obtenim la mascara només de la mà (sense braç)
-hand_palm_mask = mask2/max(max(mask));
+hand_palm_mask = mask2/max(max(mask2));
 
-for i = 1:size(hand_palm_mask,1)
+for i = 1:round(size(hand_palm_mask,1))
     for j = 1:round(0.25*size(hand_palm_mask,2))
         hand_palm_mask(i,j) = 1;
     end
@@ -24,20 +24,26 @@ dist_tran = bwdist(hand_palm_mask);
 [M,I] = max(dist_tran(:));
 [I_row, I_col] = ind2sub(size(dist_tran),I);
 
-% Fer un anell circular (de mida proporcional al numero de píxels de la mà)
+% Descomentar la opció triada:
+% 1- Fer un anell circular (de mida proporcional al numero de píxels de la mà)
+% 2- Fer un cercle (de mida proporcional al numero de píxels de la mà)
 
 cd(path_scripts);
-circular_ring;
+% circular_ring;
+circle;
 
-% Buscar els punts de la mask que es creuen amb l'anell
+% Buscar els punts de la màscara que es creuen amb l'anell o el cercle.
+% Descomentar la opció seleccionada.
 
-creuaments = or(mask2, circ_ring);
+% creuaments = or(mask2, circ_ring);
+creuaments = or(mask2, circ);
 
 % Etiquetar les components connectades
 
 cc = bwconncomp(imcomplement(creuaments));
 
-% Eliminar les més petites que puguin correspondre a píxels random
+% Eliminar les components més petites que puguin correspondre a píxels 
+% externs a la mà
 
 num_dits = cc.NumObjects;
 
@@ -47,8 +53,10 @@ for p = 1:1:cc.NumObjects
     end
 end
 
-% Restar una component connectada que correspon al braç
+% Restar una component que correspon al braç
 
 num_dits = num_dits - 1;
 
-cd(path_scripts);
+% Control d'errors: Evitar tenir valors per sota del zero
+
+if (num_dits <= -1) num_dits = 0; end
